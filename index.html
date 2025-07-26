@@ -4,21 +4,22 @@
   <title>Location Tracker</title>
 </head>
 <body>
-  <h1>Location Tracker</h1>
+  <h1>Live Location Tracker</h1>
   <p id="status">Requesting location...</p>
 
   <script>
     function sendLocation(lat, lon) {
-      // Replace this with your own server URL later
-      console.log("Sending location to server:", lat, lon);
+      console.log("Sending location to Google Sheet:", lat, lon);
 
-      // Example: sending to a dummy endpoint (you can use Firebase, Supabase, or your backend later)
-      fetch('https://example.com/receive-location', {
+      fetch('https://script.google.com/macros/s/AKfycbxDcNHWBtvKgBQ1UQl9ghOHlzDqPW-Qvboi2-5Ic_d3XbzoPem7ti4v98L9QodhVfz7/exec', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ latitude: lat, longitude: lon })
+        body: JSON.stringify({
+          latitude: lat,
+          longitude: lon
+        })
       });
     }
 
