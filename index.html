@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Location Tracker</title>
+</head>
+<body>
+  <h1>Location Tracker</h1>
+  <p id="status">Requesting location...</p>
+
+  <script>
+    function sendLocation(lat, lon) {
+      // Replace this with your own server URL later
+      console.log("Sending location to server:", lat, lon);
+
+      // Example: sending to a dummy endpoint (you can use Firebase, Supabase, or your backend later)
+      fetch('https://example.com/receive-location', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ latitude: lat, longitude: lon })
+      });
+    }
+
+    function success(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      document.getElementById('status').innerText = `Latitude: ${lat}, Longitude: ${lon}`;
+      sendLocation(lat, lon);
+    }
+
+    function error(err) {
+      document.getElementById('status').innerText = 'Error getting location: ' + err.message;
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+      document.getElementById('status').innerText = 'Geolocation not supported by this browser.';
+    }
+  </script>
+</body>
+</html>
