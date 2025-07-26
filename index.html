@@ -1,44 +1,47 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Location Tracker</title>
-</head>
-<body>
-  <h1>Live Location Tracker</h1>
-  <p id="status">Requesting location...</p>
+  <head>
+    <title>Location Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+      function sendLocation(position) {
+        const data = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        };
 
-  <script>
-    function sendLocation(lat, lon) {
-      console.log("Sending location to Google Sheet:", lat, lon);
-
-      fetch('https://script.google.com/macros/s/AKfycbxDcNHWBtvKgBQ1UQl9ghOHlzDqPW-Qvboi2-5Ic_d3XbzoPem7ti4v98L9QodhVfz7/exec', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          latitude: lat,
-          longitude: lon
+        fetch('https://script.google.com/macros/s/AKfycbxDcNHWBtvKgBQ1UQl9ghOHlzDqPW-Qvboi2-5Ic_d3XbzoPem7ti4v98L9QodhVfz7/exec', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
         })
-      });
-    }
+        .then(response => response.text())
+        .then(result => {
+          document.getElementById("status").innerText = "Location sent successfully!";
+        })
+        .catch(error => {
+          document.getElementById("status").innerText = "Error sending location.";
+          console.error(error);
+        });
+      }
 
-    function success(position) {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      document.getElementById('status').innerText = `Latitude: ${lat}, Longitude: ${lon}`;
-      sendLocation(lat, lon);
-    }
+      function getLocationAndSend() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(sendLocation, function(error) {
+            document.getElementById("status").innerText = "Location access denied.";
+          });
+        } else {
+          document.getElementById("status").innerText = "Geolocation not supported.";
+        }
+      }
 
-    function error(err) {
-      document.getElementById('status').innerText = 'Error getting location: ' + err.message;
-    }
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(success, error);
-    } else {
-      document.getElementById('status').innerText = 'Geolocation not supported by this browser.';
-    }
-  </script>
-</body>
+      window.onload = getLocationAndSend;
+    </script>
+  </head>
+  <body>
+    <h2>Tracking Your Location...</h2>
+    <p id="status">Waiting for permission...</p>
+  </body>
 </html>
