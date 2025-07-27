@@ -1,47 +1,68 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Location Tracker</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-      function sendLocation(position) {
-        const data = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        };
+<head>
+  <title>Live GPS Tracker</title>
+</head>
+<body>
+  <h1>Tracking...</h1>
+  <p id="status">Waiting for location...</p>
 
-        fetch('https://script.google.com/macros/s/AKfycbxDcNHWBtvKgBQ1UQl9ghOHlzDqPW-Qvboi2-5Ic_d3XbzoPem7ti4v98L9QodhVfz7/exec', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        })
-        .then(response => response.text())
-        .then(result => {
-          document.getElementById("status").innerText = "Location sent successfully!";
-        })
-        .catch(error => {
-          document.getElementById("status").innerText = "Error sending location.";
-          console.error(error);
-        });
-      }
+  <!-- Firebase SDKs from CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
 
-      function getLocationAndSend() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(sendLocation, function(error) {
-            document.getElementById("status").innerText = "Location access denied.";
-          });
-        } else {
-          document.getElementById("status").innerText = "Geolocation not supported.";
-        }
-      }
+  <script>
+    // ✅ Your Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyA4YgvaZTl2af1U74chmPcp69_itb8jgVc",
+      authDomain: "locationtracker-5df11.firebaseapp.com",
+      databaseURL: "https://locationtracker-5df11-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "locationtracker-5df11",
+      storageBucket: "locationtracker-5df11.appspot.com",
+      messagingSenderId: "601939519444",
+      appId: "1:601939519444:web:366d6f583541ed435ed841"
+    };
 
-      window.onload = getLocationAndSend;
-    </script>
-  </head>
-  <body>
-    <h2>Tracking Your Location...</h2>
-    <p id="status">Waiting for permission...</p>
-  </body>
+    // ✅ Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const device = navigator.userAgent;
+    const userId = "user_" + Math.floor(Math.random() * 10000);
+
+    function sendLocation(position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      const timestamp = new Date().toISOString();
+
+      const data = {
+        latitude: lat,
+        longitude: lng,
+        timestamp: timestamp,
+        device: device,
+        userId: userId
+      };
+
+      db.ref("locations").push(data);
+
+      document.getElementById("status").innerText = 
+        `✅ Sent: ${lat}, ${lng}`;
+    }
+
+    function handleError(err) {
+      document.getElementById("status").innerText = `❌ Error: ${err.message}`;
+    }
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.watchPosition(sendLocation, handleError, {
+        enableHighAccuracy: true,
+        maximumAge: 5000,
+        timeout: 10000
+      });
+    } else {
+      document.getElementById("status").innerText = 
+        "❌ Geolocation not supported.";
+    }
+  </script>
+</body>
 </html>
